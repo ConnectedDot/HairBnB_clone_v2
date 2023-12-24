@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 """Defines the User class."""
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String
+from sqlalchemy.orm import Relationship
 
 
-class User(BaseModel):
+class User(BaseModel, Base):
     """Represent a User.
 
     Attributes:
@@ -12,16 +14,13 @@ class User(BaseModel):
         first_name (str): The first name of the user.
         last_name (str): The last name of the user.
     """
+    __tablename__ = "users"
 
-    def __init__(self, *args, **kwargs):
-        """
-            Initialize clss user with kwargs
-            Args:
-                *args(positional arg): strings
-                **kwargs(keyword arg): dictionary
-        """
-        super().__init__(*args, **kwargs)
-        self.email = ""
-        self.password = ""
-        self.first_name = ""
-        self.last_name = ""
+    email = Column(String(128), nullable=False)
+    password = Column(String(128), nullable=False)
+    first_name = Column(String(128), nullable=True)
+    last_name = Column(String(128), nullable=True)
+    places = Relationship("Place", backref="user",
+                          cascade="all, delete-orphan")
+    reviews = Relationship("Review", backref="user",
+                           cascade="all, delete-orphan")
